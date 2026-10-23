@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>WhatsApp Web</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: white;
+        }
+
+        .app {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            margin: 0 auto;
+            overflow: hidden;
+            background-color: white;
+        }
+
+        /* LEFT SIDEBAR */
+
+        .left {
+            width: 30%;
+            height: 100%;
+            flex-shrink: 0;
+            background-color: white;
+            border-right: 1px solid #ddd;
+        }
+
+        .left-header {
+            height: 33px;
+            background-color: #eeeeee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px;
+        }
+
+        .user-icon {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background-color: #dce3e5;
+            position: relative;
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 19px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .header-icons span {
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .header-icons span:hover {
+            color: #111;
+        }
+
+        /* SEARCH BAR */
+
+        .search-box {
+            height: 34px;
+            padding: 5px 10px;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #eee;
+        }
+
+        .search {
+            height: 24px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: 3px;
+        }
+
+        .search-icon {
+            width: 30px;
+            text-align: center;
+            color: #aaa;
+            font-size: 12px;
+        }
+
+        .search input {
+            width: 160px;
+            height: 23px;
+            border: none;
+            outline: none;
+            font-size: 8px;
+            color: #777;
+        }
+
+        /* CHAT LIST */
+
+        .chat-list {
+            width: 100%;
+        }
+
+        .chat {
+            width: 100%;
+            height: 51px;
+            display: flex;
+            align-items: center;
+            padding: 5px 7px;
+            border-bottom: 1px solid #eeeeee;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .chat:hover {
+            background-color: #f4f4f4;
+        }
+
+        .chat.active {
+            background-color: #e9edef;
+        }
+
+        .avatar {
+            width: 31px;
+            height: 31px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 8px;
+            background-color: #ddd;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .chat-info {
+            width: 145px;
+            height: 40px;
+            padding-top: 2px;
+            overflow: hidden;
+        }
+
+        .chat-name {
+            font-size: 10px;
+            color: #222;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-message {
+            font-size: 8px;
+            color: #999;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-time {
+            width: 32px;
+            flex-shrink: 0;
+            align-self: flex-start;
+            margin-top: 5px;
+            text-align: right;
+            color: #aaa;
+            font-size: 7px;
+            white-space: nowrap;
+        }
+
+        /* RIGHT CHAT AREA */
+
+        .right {
+            width: 70%;
+            height: 100%;
+            position: relative;
+            background-color: #e5ddd5;
+        }
+
+        .chat-header {
+            height: 33px;
+            background-color: #eeeeee;
+            display: flex;
+            align-items: center;
+            padding: 3px 9px;
+        }
+
+        .chat-header-avatar {
+            width: 27px;
+            height: 27px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 8px;
+        }
+
+        .chat-header-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .contact-info {
+            width: 300px;
+        }
+
+        .contact-name {
+            font-size: 10px;
+            color: #222;
+            margin-bottom: 2px;
+        }
+
+        .contact-status {
+            font-size: 8px;
+            color: #777;
+        }
+
+        .right-header-icons {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            color: #777;
+            font-size: 15px;
+        }
+
+        .right-header-icons span {
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .right-header-icons span:hover {
+            color: #222;
+        }
+
+        /* MESSAGE BACKGROUND */
+
+        .messages {
+            height: 308px;
+            padding: 12px;
+            position: relative;
+            overflow: hidden;
+            background-color: #e5ddd5;
+            background-image:
+                radial-gradient(#d5cdc5 0.7px, transparent 0.7px);
+            background-size: 12px 12px;
+        }
+
+        .date {
+            width: 78px;
+            height: 20px;
+            background-color: #dbeaf0;
+            border-radius: 5px;
+            margin: 162px auto 5px;
+            text-align: center;
+            line-height: 20px;
+            font-size: 7px;
+            color: #718087;
+        }
+
+        /* MESSAGE BUBBLES */
+
+        .message {
+            max-width: 230px;
+            padding: 7px 9px;
+            border-radius: 6px;
+            font-size: 8px;
+            line-height: 12px;
+            position: relative;
+            margin-bottom: 7px;
+            clear: both;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+            transition: 0.2s;
+        }
+
+        .message:hover {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.13);
+        }
+
+        .message.received {
+            float: left;
+            background-color: white;
+            color: #444;
+        }
+
+        .message.sent {
+            float: right;
+            background-color: #dcffc5;
+            color: #444;
+        }
+
+        .message-time {
+            float: right;
+            color: #999;
+            font-size: 6px;
+            margin-left: 7px;
+            margin-top: 4px;
+        }
+
+        .message.sent .message-time {
+            color: #7ca37a;
+        }
+
+        .link {
+            color: #0084b4;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .link:hover {
+            color: #005f80;
+        }
+
+        /* BOTTOM INPUT AREA */
+
+        .typing-area {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 44px;
+            background-color: #eeeeee;
+            display: flex;
+            align-items: center;
+            padding: 5px 7px;
+        }
+
+        .emoji {
+            width: 28px;
+            flex-shrink: 0;
+            text-align: center;
+            font-size: 15px;
+            color: #777;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .emoji:hover {
+            color: #333;
+        }
+
+        .message-input {
+            width: 392px;
+            height: 27px;
+            border: none;
+            outline: none;
+            border-radius: 4px;
+            padding: 0 10px;
+            background-color: white;
+            font-size: 9px;
+            color: #777;
+        }
+
+        .message-input:focus {
+            box-shadow: 0 0 2px #aaa;
+        }
+
+        .mic {
+            width: 25px;
+            flex-shrink: 0;
+            text-align: center;
+            color: #888;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .mic:hover {
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- LEFT SIDEBAR -->
+
+        <div class="left">
+
+            <div class="left-header">
+                <div class="user-icon"></div>
+
+                <div class="header-icons">
+                    <span>▣</span>
+                    <span>⋮</span>
+                </div>
+            </div>
+
+            <div class="search-box">
+                <div class="search">
+                    <div class="search-icon">⌕</div>
+                    <input type="text" placeholder="Search or start new chat">
+                </div>
+            </div>
+
+            <div class="chat-list">
+
+                <div class="chat active">
+                    <div class="avatar">
+                        <img src="https://i.pravatar.cc/100?img=47" alt="Swati">
+                    </div>
+
+                    <div class="chat-info">
+                        <div class="chat-name">Swati - THN</div>
+                        <div class="chat-message" style="color:#38a85a;">
+                            typing...
+                        </div>
+                    </div>
+
+                    <div class="chat-time">02:01</div>
+                </div>
+
+                <div class="chat">
+                    <div class="avatar">
+                        <img src="https://i.pravatar.cc/100?img=12" alt="Chintu">
+                    </div>
+
+                    <div class="chat-info">
+                        <div class="chat-name">Chintu Voda</div>
+                        <div class="chat-message">
+                            In box top n center
+                        </div>
+                    </div>
+
+                    <div class="chat-time">Yesterday</div>
+                </div>
+
+                <div class="chat">
+                    <div class="avatar">
+                        <img src="https://i.pravatar.cc/100?img=5" alt="Pinder">
+                    </div>
+
+                    <div class="chat-info">
+                        <div class="chat-name">Pinder whatsapp</div>
+                        <div class="chat-message">K</div>
+                    </div>
+
+                    <div class="chat-time">Yesterday</div>
+                </div>
+
+                <div class="chat">
+                    <div class="avatar">
+                        <img src="https://i.pravatar.cc/100?img=32" alt="Priyanshu">
+                    </div>
+
+                    <div class="chat-info">
+                        <div class="chat-name">Priyanshu pune</div>
+                        <div class="chat-message">
+                            मैंने आपको दवा से पूछा - आम बोलचाल में आ...
+                        </div>
+                    </div>
+
+                    <div class="chat-time">Yesterday</div>
+                </div>
+
+                <div class="chat">
+                    <div class="avatar">
+                        <img src="https://i.pravatar.cc/100?img=11" alt="Harash">
+                    </div>
+
+                    <div class="chat-info">
+                        <div class="chat-name">Harash-mumbai</div>
+                        <div class="chat-message">✓ Aram se</div>
+                    </div>
+
+                    <div class="chat-time">Monday</div>
+                </div>
+
+                <div class="chat">
+                    <div class="avatar">
+                        <img src="https://i.pravatar.cc/100?img=15" alt="Jiten">
+                    </div>
+
+                    <div class="chat-info">
+                        <div class="chat-name">Jiten</div>
+                        <div class="chat-message">K</div>
+                    </div>
+
+                    <div class="chat-time">Monday</div>
+                </div>
+
+                <div class="chat">
+                    <div class="avatar">
+                        <img src="https://i.pravatar.cc/100?img=20" alt="Akki">
+                    </div>
+
+                    <div class="chat-info">
+                        <div class="chat-name">Akki</div>
+                        <div class="chat-message">
+                            ✓ आज का सच ✓ नीट आगे बढ़ने न...
+                        </div>
+                    </div>
+
+                    <div class="chat-time">Friday</div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- RIGHT CHAT WINDOW -->
+
+        <div class="right">
+
+            <div class="chat-header">
+
+                <div class="chat-header-avatar">
+                    <img src="https://i.pravatar.cc/100?img=47" alt="Swati">
+                </div>
+
+                <div class="contact-info">
+                    <div class="contact-name">Swati - THN</div>
+                    <div class="contact-status">typing...</div>
+                </div>
+
+                <div class="right-header-icons">
+                    <span>📎</span>
+                    <span>⋮</span>
+                </div>
+
+            </div>
+
+            <div class="messages">
+
+                <div class="date">22 JANUARY 2015</div>
+
+                <div class="message sent">
+                    Hey! Have you seen Whatsapp Web feature?
+                    <span class="message-time">02:00 ✓✓</span>
+                </div>
+
+                <div class="message received">
+                    Yeah...Awsummmmm 😍😃😍
+                    <span class="message-time">02:01</span>
+                </div>
+
+                <div class="message sent">
+                    Find more details on
+                    <span class="link">http://thehackernews.com/</span>
+                    <br>
+                    I have just published an article about it.
+                    <span class="message-time">02:01 ✓✓</span>
+                </div>
+
+            </div>
+
+            <div class="typing-area">
+
+                <div class="emoji">☺</div>
+
+                <input class="message-input" type="text">
+
+                <div class="mic">🎙</div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
